@@ -6,11 +6,13 @@
     <title>Sơn Công Nghiệp 3D — Sơn Hải Vân</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-
     <!-- ══ HEADER ══════════════════════════════════════════ -->
     <header id="app-header">
       <div class="header-brand">
@@ -24,8 +26,12 @@
         <span class="header-title-text">Bản đồ Sơn Công Nghiệp 3D</span>
       </div>
       <div class="header-actions">
-        <button id="btn-lang" class="hdr-btn"><span>🌐</span><span id="lang-label">EN</span></button>
-        <a href="https://sonhaivan.com/lien-he/" target="_blank" class="hdr-cta">Tư vấn ngay</a>
+        <button id="btn-lang" class="hdr-btn">
+          <span>🌐</span><span id="lang-label">EN</span>
+        </button>
+        <a href="https://sonhaivan.com/lien-he/" target="_blank" class="hdr-cta"
+          >Tư vấn ngay</a
+        >
       </div>
     </header>
 
@@ -39,33 +45,97 @@
 
     <!-- ══ MAIN BODY ════════════════════════════════════════ -->
     <div id="app-body">
-
       <!-- ── 3D CANVAS ──────────────────────────────────── -->
       <main id="canvas-wrap">
-
         <!-- Toolbar -->
         <div id="toolbar">
           <button class="tool-btn" id="btn-reset" title="Reset camera">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
           </button>
           <button class="tool-btn" id="btn-fit" title="Fit mô hình">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9l-3-3m0 0h3m-3 0v3M15 9l3-3m0 0h-3m3 0v3M9 15l-3 3m0 0h3m-3 0v-3M15 15l3 3m0 0h-3m3 0v-3"/></svg>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path
+                d="M9 9l-3-3m0 0h3m-3 0v3M15 9l3-3m0 0h-3m3 0v3M9 15l-3 3m0 0h3m-3 0v-3M15 15l3 3m0 0h-3m3 0v-3"
+              />
+            </svg>
           </button>
-          <button class="tool-btn tool-toggle" id="btn-rotate" title="Auto rotate" data-active="false">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.5 2v6h-6M2.5 22v-6h6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5A10 10 0 0 0 20.8 16.8"/></svg>
+          <button
+            class="tool-btn tool-toggle"
+            id="btn-rotate"
+            title="Auto rotate"
+            data-active="false"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <path d="M21.5 2v6h-6M2.5 22v-6h6" />
+              <path
+                d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5A10 10 0 0 0 20.8 16.8"
+              />
+            </svg>
           </button>
           <div class="tool-sep"></div>
-          <button class="tool-btn tool-toggle" id="btn-paint" title="Bật chế độ sơn màu" data-active="false">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L3 14.67V21h6.33l10.06-10.06a5.5 5.5 0 0 0 0-7.78z"/><line x1="16" y1="8" x2="2" y2="22"/></svg>
+          <button
+            class="tool-btn tool-toggle"
+            id="btn-paint"
+            title="Bật chế độ sơn màu"
+            data-active="false"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L3 14.67V21h6.33l10.06-10.06a5.5 5.5 0 0 0 0-7.78z"
+              />
+              <line x1="16" y1="8" x2="2" y2="22" />
+            </svg>
           </button>
           <button class="tool-btn" id="btn-reset-color" title="Xóa màu đã sơn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
+            </svg>
           </button>
         </div>
 
         <!-- Paint mode badge -->
         <div id="paint-hint" class="hidden">
-          <span class="paint-dot"></span> Chế độ sơn — Click vào bề mặt để phủ màu
+          <span class="paint-dot"></span> Chế độ sơn — Click vào bề mặt để phủ
+          màu
         </div>
 
         <!-- Loading -->
@@ -77,56 +147,65 @@
               <div class="sp-inner">3D</div>
             </div>
             <div class="loading-title" id="loading-title">Đang khởi tạo...</div>
-            <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+            <div class="loading-bar-wrap">
+              <div class="loading-bar" id="loading-bar"></div>
+            </div>
             <div class="loading-pct" id="loading-pct">0%</div>
           </div>
         </div>
 
         <!-- Bottom hint strip -->
         <div id="hint-strip">
-          <span id="hint-text">Kéo xoay · Cuộn zoom · Bật 🖌 để phủ màu lên mô hình</span>
+          <span id="hint-text"
+            >Kéo xoay · Cuộn zoom · Bật bút để phủ màu lên mô hình</span
+          >
         </div>
-
       </main>
 
       <!-- ── RIGHT PANEL ───────────────────────────────────── -->
       <aside id="info-panel">
         <div class="panel-scroll">
-
           <!-- Tab info -->
           <div class="panel-block panel-intro" id="tab-intro-block">
-            <div class="panel-intro-icon" id="tab-icon-display">🏗️</div>
-            <div class="panel-intro-name" id="tab-name-display">Kết cấu thép</div>
-            <div class="panel-intro-desc" id="tab-desc-display">Chọn màu và bật chế độ sơn để xem thực tế</div>
+            <div class="panel-intro-name" id="tab-name-display">
+              Kết cấu thép
+            </div>
+            <div class="panel-intro-desc" id="tab-desc-display">
+              Chọn màu và bật chế độ sơn để xem thực tế
+            </div>
           </div>
 
           <!-- Color palette -->
           <div class="panel-block" id="color-block">
             <div class="block-header">
-              <span class="block-icon">🎨</span>
-              <span class="block-title" id="palette-title">Bảng màu Sơn Hải Vân</span>
+              <span class="block-title">Bảng màu Sơn Hải Vân</span>
             </div>
             <!-- Active color -->
             <div id="active-color-row">
-              <div id="active-swatch" style="background:#cccccc"></div>
+              <div id="active-swatch" style="background: #cccccc"></div>
               <div id="active-info">
                 <div id="active-code">Chưa chọn màu</div>
-                <div id="active-hex" style="color:#8599aa;font-size:10px;font-family:'JetBrains Mono',monospace"></div>
+                <div
+                  id="active-hex"
+                  style="
+                    color: #8599aa;
+                    font-size: 10px;
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                  "
+                ></div>
               </div>
               <button id="btn-apply-all">Phủ toàn bộ</button>
             </div>
-            <!-- Grid -->
-            <div class="palette-group-label">Sơn Lót</div>
-            <div class="palette-grid" id="palette-primer"></div>
-            <div class="palette-group-label" style="margin-top:10px">Sơn Phủ màu</div>
-            <div class="palette-grid" id="palette-topcoat"></div>
+            <!-- Single palette grid -->
+            <div class="palette-grid" id="palette-grid"></div>
           </div>
 
           <!-- Paint system recommendation -->
           <div class="panel-block" id="product-block">
             <div class="block-header">
-              <span class="block-icon">🏭</span>
-              <span class="block-title" id="product-block-title">Hệ sơn đề nghị</span>
+              <span class="block-title" id="product-block-title"
+                >Hệ sơn đề nghị</span
+              >
             </div>
             <div id="product-list"><!-- injected --></div>
           </div>
@@ -134,14 +213,21 @@
           <!-- CTA -->
           <div class="panel-block cta-block">
             <div class="cta-inner">
-              <span style="font-size:20px;display:block;margin-bottom:6px">💬</span>
               <div class="cta-label">Nhận tư vấn miễn phí</div>
-              <div class="cta-sub">Chuyên gia Sơn Hải Vân hỗ trợ chọn đúng hệ sơn</div>
-              <a href="https://sonhaivan.com/lien-he/" target="_blank" class="cta-btn">Liên hệ ngay →</a>
+              <div class="cta-sub">
+                Chuyên gia Sơn Hải Vân hỗ trợ chọn đúng hệ sơn cho công trình
+                của bạn
+              </div>
+              <a
+                href="https://sonhaivan.com/lien-he/"
+                target="_blank"
+                class="cta-btn"
+                >Liên hệ ngay →</a
+              >
             </div>
           </div>
-
         </div>
+        <!-- Panel toggle button is injected by JS -->
       </aside>
     </div>
 
@@ -154,10 +240,12 @@
     </div>
 
     <script type="importmap">
-      { "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/"
-      }}
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/"
+        }
+      }
     </script>
     <script type="module" src="./main.js"></script>
   </body>
