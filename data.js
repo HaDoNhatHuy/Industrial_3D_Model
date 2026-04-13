@@ -23,7 +23,7 @@ export const TABS = [
     label: "Kết cấu thép",
     labelEn: "Steel Structure",
     color: "#37474f",
-    modelFile: "nha-xuong-2.glb",
+    modelFile: "Nha-xuong-chuan.glb",
     desc: "Cung cấp nhiều chủng loại sơn cho các mục đích khác nhau của công trình từ kết cấu thép, cầu cảng đến các thiết bị xa bờ. Các sản phẩm thích hợp dùng cho các thiết bị máy móc trong công nghiệp lẫn các thiết bị dùng sản xuất thực phẩm.",
     descEn:
       "Paints for steel structures, bridges, offshore equipment, industrial machinery and food-grade applications.",
@@ -94,7 +94,7 @@ export const TABS = [
     label: "Bồn chứa — Đường ống",
     labelEn: "Tanks & Pipelines",
     color: "#00695c",
-    modelFile: "bon-chua-duong-ong.glb",
+    modelFile: "bon-chua-duong-ong-chuan.glb",
     desc: "Sơn Hải Vân cung cấp các hệ sơn bảo vệ cho nhiều ứng dụng bao gồm hệ thống đường ống dẫn nước phần nổi và chôn ngầm, bồn chứa nguyên liệu, đường ống cứu hỏa.",
     descEn:
       "Protective coatings for above-ground and buried pipelines, storage tanks, and fire suppression pipelines.",
@@ -129,10 +129,10 @@ export const TABS = [
   {
     key: "san_be_tong",
     icon: "⬛",
-    label: "Sơn sàn",
+    label: "Sơn sàn bê tông",
     labelEn: "Floor Coatings",
     color: "#6d4c41",
-    modelFile: "san-be-tong.glb",
+    modelFile: "san-be-tong-chuan.glb",
     desc: "Sử dụng hệ thống sơn sàn bê tông là một trong những giải pháp tối ưu để bảo vệ hệ thống sàn, mang lại tính thẩm mỹ, chống thấm, chịu hóa chất và các công dụng đặc biệt như chống tĩnh điện, tăng ma sát. Đa dạng từ hệ thống sàn epoxy thông dụng đến các hệ thống chuyên dụng cho môi trường khắc nghiệt.",
     descEn:
       "Optimal floor protection with epoxy and PU systems offering aesthetics, waterproofing, chemical resistance, anti-static and anti-slip properties.",

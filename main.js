@@ -35,8 +35,8 @@ const L = {
 const t = () => L[lang];
 
 // ══ 1. SCENE SETUP ════════════════════════════════════════
+// FIX 3: Chỉ dùng một nền sáng cho tất cả tab (bỏ BG_DARK)
 const BG_DEFAULT = new THREE.Color(0xdde3ea);
-const BG_DARK = new THREE.Color(0x1c2a3a);
 
 const scene = new THREE.Scene();
 scene.background = BG_DEFAULT.clone();
@@ -72,7 +72,7 @@ controls.minDistance = 2;
 controls.maxDistance = 80;
 controls.maxPolarAngle = Math.PI * 0.56;
 
-// Ground mesh (color changes with dark tab)
+// Ground mesh
 const ground = new THREE.Mesh(
   new THREE.PlaneGeometry(100, 100),
   new THREE.MeshLambertMaterial({ color: 0xcdd5de }),
@@ -517,33 +517,51 @@ const CAM_PRESETS = {
   dac_biet: { pos: [14, 9, 14], target: [0, 3.5, 0] },
 };
 
+// FIX 3: Màu mặc định cho tab Lĩnh vực đặc biệt khi nền sáng
+// Dùng màu thép xanh đậm vừa, nổi rõ trên nền #dde3ea
+const DAC_BIET_DEFAULT_COLOR = "#6e8a9a";
+
 const tabGroups = {};
 let activeTabKey = null;
 
 // ══ 6. COLOR PAINT SYSTEM ════════════════════════════════
 let paintMode = false;
 let selectedColor = null;
-// paintedMeshes: mesh → hex (once painted, cannot be overwritten)
 const paintedMeshes = new Map();
 
+// FIX 2: Thêm emissive cho màu tối để người dùng phân biệt được
 function applyColorToMesh(mesh, colorEntry) {
-  // Paint-once: if already painted, do nothing
   if (paintedMeshes.has(mesh)) return;
 
   const origMat = Array.isArray(mesh.material)
     ? mesh.material[0]
     : mesh.material;
   const newMat = origMat.clone();
-  newMat.color = new THREE.Color(colorEntry.hex);
+  const color = new THREE.Color(colorEntry.hex);
+  newMat.color = color;
 
   if (colorEntry.metallic) {
-    // Metallic silver: high reflectance
     newMat.roughness = 0.12;
     newMat.metalness = 0.92;
     newMat.envMapIntensity = 1.0;
+    newMat.emissive = new THREE.Color(0x000000);
+    newMat.emissiveIntensity = 0;
   } else {
-    newMat.roughness = Math.max(0.15, (newMat.roughness || 0.4) * 0.65);
-    newMat.metalness = Math.max(0.0, (newMat.metalness || 0.7) * 0.18);
+    // Giảm metalness để màu hiện rõ hơn, tăng roughness nhẹ để màu không quá phẳng
+    newMat.roughness = 0.52;
+    newMat.metalness = 0.06;
+
+    // Tính độ sáng (luminance) của màu được chọn
+    // Nếu màu quá tối (lum < 0.18), thêm emissive để người dùng nhìn thấy màu thực
+    const lum = 0.299 * color.r + 0.587 * color.g + 0.114 * color.b;
+    if (lum < 0.18) {
+      // Màu tối: thêm emissive với cùng màu, intensity đủ để thấy sắc độ
+      newMat.emissive = color.clone();
+      newMat.emissiveIntensity = 0.42;
+    } else {
+      newMat.emissive = new THREE.Color(0x000000);
+      newMat.emissiveIntensity = 0;
+    }
   }
 
   mesh.material = Array.isArray(mesh.material) ? [newMat] : newMat;
@@ -565,6 +583,26 @@ function resetAllColors() {
       : origMat.clone();
   });
   paintedMeshes.clear();
+}
+
+// FIX 3: Phủ màu mặc định cho tab Lĩnh vực đặc biệt (gọi TRƯỚC saveOriginals)
+// để màu mặc định trở thành baseline khi reset
+function applyDefaultColorToGroup(grp, hexColor) {
+  const color = new THREE.Color(hexColor);
+  grp.traverse((c) => {
+    if (c.isMesh && !c.isGround) {
+      const mats = Array.isArray(c.material) ? c.material : [c.material];
+      mats.forEach((mat) => {
+        if (mat && mat.isMeshStandardMaterial) {
+          mat.color = color.clone();
+          mat.roughness = 0.42;
+          mat.metalness = 0.55;
+          mat.emissive = new THREE.Color(0x000000);
+          mat.emissiveIntensity = 0;
+        }
+      });
+    }
+  });
 }
 
 // Raycaster for click painting
@@ -645,20 +683,25 @@ floatBtn.addEventListener("click", toggleNav);
 document.body.appendChild(floatBtn);
 
 // ══ 8. RIGHT PANEL COLLAPSE ════════════════════════════════
+// FIX 1: Nút đóng/mở panel phải — thiết kế rõ ràng hơn
 let panelCollapsed = false;
 const infoPanel = document.getElementById("info-panel");
 
-// Create toggle button
 const panelToggleBtn = document.createElement("button");
 panelToggleBtn.id = "panel-toggle-btn";
 panelToggleBtn.title = "Ẩn/Hiện bảng thông tin";
-panelToggleBtn.innerHTML = "◀";
+panelToggleBtn.innerHTML = `
+  <span class="ptb-arrow">◀</span>
+  <span class="ptb-label">Bảng thông tin</span>
+`;
 infoPanel.appendChild(panelToggleBtn);
 
 panelToggleBtn.addEventListener("click", () => {
   panelCollapsed = !panelCollapsed;
   infoPanel.classList.toggle("collapsed", panelCollapsed);
-  panelToggleBtn.innerHTML = panelCollapsed ? "▶" : "◀";
+  panelToggleBtn.querySelector(".ptb-arrow").textContent = panelCollapsed
+    ? "▶"
+    : "◀";
   setTimeout(resize, 320);
 });
 
@@ -772,16 +815,11 @@ function onTabClick(key) {
   switchTab(key);
 }
 
+// FIX 3: Xóa logic nền tối — tất cả tab dùng nền sáng thống nhất
 function setSceneBackground(key) {
-  if (key === "dac_biet") {
-    scene.background = BG_DARK.clone();
-    scene.fog = new THREE.Fog(0x1c2a3a, 55, 160);
-    ground.material.color.setHex(0x1a2535);
-  } else {
-    scene.background = BG_DEFAULT.clone();
-    scene.fog = new THREE.Fog(0xdde3ea, 55, 160);
-    ground.material.color.setHex(0xcdd5de);
-  }
+  scene.background = BG_DEFAULT.clone();
+  scene.fog = new THREE.Fog(0xdde3ea, 55, 160);
+  ground.material.color.setHex(0xcdd5de);
 }
 
 function switchTab(key) {
@@ -806,8 +844,13 @@ function switchTab(key) {
   }, 80);
 }
 
+// FIX 3: Áp màu mặc định cho dac_biet TRƯỚC saveOriginals
+// → màu mặc định trở thành baseline khi người dùng nhấn reset
 function buildAndAdd(key) {
   const grp = BUILDERS[key]();
+  if (key === "dac_biet") {
+    applyDefaultColorToGroup(grp, DAC_BIET_DEFAULT_COLOR);
+  }
   scene.add(grp);
   saveOriginals(grp);
   tabGroups[key] = grp;
@@ -835,6 +878,10 @@ function tryLoadGLB(key, filename, fallback) {
           c.castShadow = c.receiveShadow = true;
         }
       });
+      // FIX 3: Áp màu mặc định trước saveOriginals cho GLB dac_biet
+      if (key === "dac_biet") {
+        applyDefaultColorToGroup(model, DAC_BIET_DEFAULT_COLOR);
+      }
       scene.add(model);
       saveOriginals(model);
       tabGroups[key] = model;

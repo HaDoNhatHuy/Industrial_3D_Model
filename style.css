@@ -532,45 +532,76 @@ body.nav-collapsed #app-body {
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 #info-panel.collapsed {
-  width: 20px;
+  width: 28px;
 }
 #info-panel.collapsed .panel-scroll {
   opacity: 0;
   pointer-events: none;
 }
 
-/* Panel toggle button */
+/* ══ FIX 1: Panel toggle button — thiết kế rõ ràng, dễ tìm ══ */
 #panel-toggle-btn {
   position: absolute;
   top: 50%;
-  left: -1px;
+  left: 0;
   transform: translate(-100%, -50%);
-  width: 18px;
-  height: 52px;
+  width: 24px;
+  height: 72px;
   background: var(--navy);
   border: none;
-  border-radius: 5px 0 0 5px;
+  border-radius: 8px 0 0 8px;
   color: var(--gold-lt);
-  font-size: 9px;
-  font-weight: 600;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   z-index: 600;
-  box-shadow: -3px 0 10px rgba(12, 30, 53, 0.18);
-  transition: background 0.15s;
-  letter-spacing: 0;
+  box-shadow: -4px 0 14px rgba(12, 30, 53, 0.22);
+  transition:
+    background 0.15s,
+    width 0.15s;
+  padding: 0;
+  overflow: hidden;
 }
 #panel-toggle-btn:hover {
   background: var(--navy-mid);
+  width: 28px;
 }
-/* When collapsed, the toggle should still be visible on right edge */
+
+/* Mũi tên chính */
+.ptb-arrow {
+  font-size: 11px;
+  line-height: 1;
+  transition: transform 0.3s;
+}
+
+/* Nhãn chữ dọc */
+.ptb-label {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(212, 176, 122, 0.65);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Khi panel đang đóng: nút chuyển sang cạnh trái của panel (width=28px) */
 #info-panel.collapsed #panel-toggle-btn {
   left: 0;
-  border-radius: 0 5px 5px 0;
+  border-radius: 0 8px 8px 0;
   transform: translate(0, -50%);
-  box-shadow: 3px 0 10px rgba(12, 30, 53, 0.18);
+  box-shadow: 4px 0 14px rgba(12, 30, 53, 0.22);
+}
+
+/* Khi panel collapsed, ẩn nhãn chữ để gọn hơn */
+#info-panel.collapsed .ptb-label {
+  display: none;
 }
 
 .panel-scroll {
