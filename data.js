@@ -53,7 +53,7 @@ export const TABS = [
   {
     key: "bon_chua",
     icon: "⬛",
-    label: "Hóa chất",
+    label: "Bồn chứa hóa chất - phân bón",
     labelEn: "Chemical",
     color: "#1565c0",
     modelFile: "bon-chua-lop-thep.glb",
