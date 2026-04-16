@@ -530,9 +530,8 @@ let selectedColor = null;
 const paintedMeshes = new Map();
 
 // FIX 2: Thêm emissive cho màu tối để người dùng phân biệt được
+// Cho phép ghi đè màu — không có guard paint-once nữa
 function applyColorToMesh(mesh, colorEntry) {
-  if (paintedMeshes.has(mesh)) return;
-
   const origMat = Array.isArray(mesh.material)
     ? mesh.material[0]
     : mesh.material;
@@ -725,6 +724,10 @@ function renderPalette() {
 }
 
 function selectColor(c) {
+  // Tự động xóa màu cũ khi chọn màu mới — không cần người dùng reset thủ công
+  if (selectedColor && selectedColor.code !== c.code) {
+    resetAllColors();
+  }
   selectedColor = c;
   const swatch = document.getElementById("active-swatch");
   if (c.metallic) {
