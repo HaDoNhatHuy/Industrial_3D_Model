@@ -19,6 +19,9 @@ const L = {
     navShow: "Hiện menu ▼",
     panelOpen: "◀",
     panelClose: "▶",
+    rotateTitle: "Vui lòng xoay ngang màn hình",
+    rotateSub:
+      "Mô hình 3D hiển thị đẹp và đầy đủ nhất ở chế độ ngang. Hãy xoay điện thoại của bạn.",
   },
   en: {
     toggleBtn: "VI",
@@ -30,9 +33,41 @@ const L = {
     navShow: "Show menu ▼",
     panelOpen: "◀",
     panelClose: "▶",
+    rotateTitle: "Please rotate your device",
+    rotateSub:
+      "This 3D model looks best in landscape mode. Please rotate your phone.",
   },
 };
 const t = () => L[lang];
+
+// ══ 0.5 GỢI Ý XOAY NGANG MÀN HÌNH (chỉ áp dụng cho điện thoại) ══
+const rotateOverlay = document.getElementById("rotate-device-overlay");
+const rotateTitleEl = document.getElementById("rotate-hint-title");
+const rotateSubEl = document.getElementById("rotate-hint-sub");
+
+function updateRotateOverlayText() {
+  if (rotateTitleEl) rotateTitleEl.textContent = t().rotateTitle;
+  if (rotateSubEl) rotateSubEl.textContent = t().rotateSub;
+}
+updateRotateOverlayText();
+
+// Chỉ hiện trên điện thoại (màn hình nhỏ + cảm ứng) khi đang ở chế độ dọc
+function shouldShowRotateHint() {
+  const isCoarsePointer =
+    window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  const shortSide = Math.min(window.innerWidth, window.innerHeight);
+  const isPhoneSized = shortSide <= 640; // loại trừ hầu hết máy tính bảng
+  const isPortraitNow = window.innerHeight > window.innerWidth;
+  return Boolean(isCoarsePointer) && isPhoneSized && isPortraitNow;
+}
+
+function updateRotateOverlay() {
+  if (!rotateOverlay) return;
+  rotateOverlay.classList.toggle("visible", shouldShowRotateHint());
+}
+window.addEventListener("resize", updateRotateOverlay);
+window.addEventListener("orientationchange", updateRotateOverlay);
+updateRotateOverlay(); // kiểm tra ngay khi tải trang
 
 // ══ 1. SCENE SETUP ════════════════════════════════════════
 // FIX 3: Chỉ dùng một nền sáng cho tất cả tab (bỏ BG_DARK)
@@ -953,6 +988,7 @@ document.getElementById("btn-lang").addEventListener("click", () => {
   floatBtn.textContent = t().navShow;
   renderTabs();
   renderPalette();
+  updateRotateOverlayText();
   if (activeTabKey) renderTabInfo(TABS.find((t) => t.key === activeTabKey));
 });
 
