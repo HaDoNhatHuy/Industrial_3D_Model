@@ -2,7 +2,15 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      {
+        const embedParam = new URLSearchParams(window.location.search).get("embed");
+        if (embedParam === "1" || embedParam === "true") {
+          document.documentElement.classList.add("embed-mode");
+        }
+      }
+    </script>
     <title>Sơn Công Nghiệp 3D — Sơn Hải Vân</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

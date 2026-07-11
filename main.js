@@ -557,7 +557,9 @@ const CAM_PRESETS = {
 const DAC_BIET_DEFAULT_COLOR = "#6e8a9a";
 
 const tabGroups = {};
+const tabLoadPromises = {};
 let activeTabKey = null;
+let tabSwitchId = 0;
 
 // ══ 6. COLOR PAINT SYSTEM ════════════════════════════════
 let paintMode = false;
@@ -861,7 +863,8 @@ function setSceneBackground(key) {
 }
 
 function switchTab(key) {
-  showLoading("Đang tạo mô hình...");
+  const switchId = ++tabSwitchId;
+  const loadingId = showLoading("Đang tạo mô hình...");
   if (activeTabKey && tabGroups[activeTabKey])
     tabGroups[activeTabKey].visible = false;
   activeTabKey = key;
@@ -871,15 +874,33 @@ function switchTab(key) {
   renderTabInfo(tab);
 
   setTimeout(() => {
-    if (!tabGroups[key]) {
-      tryLoadGLB(key, tab.modelFile, () => {
-        if (!tabGroups[key]) buildAndAdd(key);
-        afterSwitch(key);
+    ensureTabGroup(key, tab)
+      .then(() => {
+        if (switchId !== tabSwitchId || activeTabKey !== key) {
+          if (tabGroups[key]) tabGroups[key].visible = false;
+          return;
+        }
+        afterSwitch(key, loadingId);
+      })
+      .catch(() => {
+        if (switchId !== tabSwitchId || activeTabKey !== key) return;
+        buildAndAdd(key);
+        afterSwitch(key, loadingId);
       });
-    } else {
-      afterSwitch(key);
-    }
   }, 80);
+}
+
+function ensureTabGroup(key, tab) {
+  if (tabGroups[key]) return Promise.resolve(tabGroups[key]);
+  if (tabLoadPromises[key]) return tabLoadPromises[key];
+
+  tabLoadPromises[key] = tryLoadGLB(key, tab.modelFile)
+    .then((model) => model || buildAndAdd(key))
+    .finally(() => {
+      delete tabLoadPromises[key];
+    });
+
+  return tabLoadPromises[key];
 }
 
 // FIX 3: Áp màu mặc định cho dac_biet TRƯỚC saveOriginals
@@ -889,46 +910,64 @@ function buildAndAdd(key) {
   if (key === "dac_biet") {
     applyDefaultColorToGroup(grp, DAC_BIET_DEFAULT_COLOR);
   }
+  grp.visible = false;
   scene.add(grp);
   saveOriginals(grp);
   tabGroups[key] = grp;
+  return grp;
 }
 
-function afterSwitch(key) {
+function afterSwitch(key, loadingId) {
+  if (!tabGroups[key] || activeTabKey !== key) return;
+  Object.entries(tabGroups).forEach(([tabKey, group]) => {
+    group.visible = tabKey === key;
+  });
   tabGroups[key].visible = true;
   flyToPreset(key);
-  hideLoading();
+  hideLoading(loadingId);
 }
 
-function tryLoadGLB(key, filename, fallback) {
-  new GLTFLoader().load(
-    `./assets/models/${filename}`,
-    (gltf) => {
-      const model = gltf.scene;
-      const bbox = new THREE.Box3().setFromObject(model);
-      const size = bbox.getSize(new THREE.Vector3());
-      const s = 10 / Math.max(size.x, size.y, size.z);
-      model.scale.setScalar(s);
-      const cen = bbox.getCenter(new THREE.Vector3());
-      model.position.set(-cen.x * s, -bbox.min.y * s, -cen.z * s);
-      model.traverse((c) => {
-        if (c.isMesh) {
-          c.castShadow = c.receiveShadow = true;
+function tryLoadGLB(key, filename) {
+  return new Promise((resolve) => {
+    new GLTFLoader().load(
+      `./assets/models/${filename}`,
+      (gltf) => {
+        if (tabGroups[key]) {
+          resolve(tabGroups[key]);
+          return;
         }
-      });
-      // FIX 3: Áp màu mặc định trước saveOriginals cho GLB dac_biet
-      if (key === "dac_biet") {
-        applyDefaultColorToGroup(model, DAC_BIET_DEFAULT_COLOR);
-      }
-      scene.add(model);
-      saveOriginals(model);
-      tabGroups[key] = model;
-      fallback();
-    },
-    (xhr) =>
-      setLoadingPct(xhr.total ? Math.round((xhr.loaded / xhr.total) * 100) : 0),
-    () => fallback(),
-  );
+
+        const model = gltf.scene;
+        const bbox = new THREE.Box3().setFromObject(model);
+        const size = bbox.getSize(new THREE.Vector3());
+        const s = 10 / Math.max(size.x, size.y, size.z);
+        model.scale.setScalar(s);
+        const cen = bbox.getCenter(new THREE.Vector3());
+        model.position.set(-cen.x * s, -bbox.min.y * s, -cen.z * s);
+        model.visible = false;
+        model.traverse((c) => {
+          if (c.isMesh) {
+            c.castShadow = c.receiveShadow = true;
+          }
+        });
+        // FIX 3: Áp màu mặc định trước saveOriginals cho GLB dac_biet
+        if (key === "dac_biet") {
+          applyDefaultColorToGroup(model, DAC_BIET_DEFAULT_COLOR);
+        }
+        scene.add(model);
+        saveOriginals(model);
+        tabGroups[key] = model;
+        resolve(model);
+      },
+      (xhr) => {
+        if (activeTabKey !== key) return;
+        setLoadingPct(
+          xhr.total ? Math.round((xhr.loaded / xhr.total) * 100) : 0,
+        );
+      },
+      () => resolve(null),
+    );
+  });
 }
 
 // ══ 11. CAMERA FLY-TO ═════════════════════════════════════
@@ -994,20 +1033,26 @@ document.getElementById("btn-lang").addEventListener("click", () => {
 
 // ══ 14. LOADING UI ════════════════════════════════════════
 const overlay = document.getElementById("loading-overlay");
+let loadingUiId = 0;
 function showLoading(msg) {
+  const id = ++loadingUiId;
   document.getElementById("loading-title").textContent = msg || "Đang tải...";
   document.getElementById("loading-bar").style.width = "0%";
   document.getElementById("loading-pct").textContent = "0%";
   overlay.classList.remove("hidden");
+  return id;
 }
 function setLoadingPct(p) {
   document.getElementById("loading-bar").style.width = p + "%";
   document.getElementById("loading-pct").textContent = p + "%";
 }
-function hideLoading() {
+function hideLoading(id = loadingUiId) {
+  if (id !== loadingUiId) return;
   document.getElementById("loading-bar").style.width = "100%";
   document.getElementById("loading-pct").textContent = "100%";
-  setTimeout(() => overlay.classList.add("hidden"), 320);
+  setTimeout(() => {
+    if (id === loadingUiId) overlay.classList.add("hidden");
+  }, 320);
 }
 
 // ══ 15. RENDER LOOP ════════════════════════════════════════

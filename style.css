@@ -26,6 +26,21 @@
   --font-mono: "JetBrains Mono", monospace;
 }
 
+html.embed-mode {
+  --header-h: 0px;
+  --brand-h: 0px;
+}
+html.embed-mode #app-header,
+html.embed-mode #brand-bar {
+  display: none;
+}
+html.embed-mode #top-nav-wrap {
+  top: 0;
+}
+html.embed-mode #nav-float-btn {
+  top: 8px;
+}
+
 *,
 *::before,
 *::after {
