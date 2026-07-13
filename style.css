@@ -30,12 +30,31 @@ html.embed-mode {
   --header-h: 0px;
   --brand-h: 0px;
 }
-html.embed-mode #app-header,
+html.embed-mode #app-header {
+  top: 8px;
+  left: auto;
+  right: 12px;
+  width: auto;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
 html.embed-mode #brand-bar {
   display: none;
 }
+html.embed-mode #app-header .header-brand,
+html.embed-mode #app-header .header-center-title {
+  display: none;
+}
+html.embed-mode #app-header .header-actions {
+  pointer-events: auto;
+}
 html.embed-mode #top-nav-wrap {
   top: 0;
+  padding-right: 230px;
 }
 html.embed-mode #nav-float-btn {
   top: 8px;

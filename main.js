@@ -14,8 +14,16 @@ const L = {
     productTitle: "Hệ sơn đề nghị",
     applyAll: "Phủ toàn bộ",
     noColor: "Chưa chọn màu",
+    colorTitle: "Bảng màu Sơn Hải Vân",
     hintPaint: "Chế độ sơn — Click vào bề mặt để phủ màu",
     hintReady: "Kéo xoay · Cuộn zoom · Bật bút để phủ màu lên mô hình",
+    headerTitle: "Bản đồ Sơn Công Nghiệp 3D",
+    consult: "Tư vấn ngay",
+    viewProduct: "Xem →",
+    ctaLabel: "Nhận tư vấn miễn phí",
+    ctaSub:
+      "Chuyên gia Sơn Hải Vân hỗ trợ chọn đúng hệ sơn cho công trình của bạn",
+    ctaBtn: "Liên hệ ngay →",
     navShow: "Hiện menu ▼",
     panelOpen: "◀",
     panelClose: "▶",
@@ -28,8 +36,16 @@ const L = {
     productTitle: "Recommended Coatings",
     applyAll: "Paint All",
     noColor: "No color selected",
+    colorTitle: "Hai Van Paint Colors",
     hintPaint: "Paint mode — Click surface to apply color",
     hintReady: "Drag to rotate · Scroll to zoom · Enable brush to paint",
+    headerTitle: "Industrial Coating 3D Map",
+    consult: "Consult now",
+    viewProduct: "View →",
+    ctaLabel: "Free consultation",
+    ctaSub:
+      "Hai Van Paint experts help you choose the right coating system for your project",
+    ctaBtn: "Contact now →",
     navShow: "Show menu ▼",
     panelOpen: "◀",
     panelClose: "▶",
@@ -39,6 +55,125 @@ const L = {
   },
 };
 const t = () => L[lang];
+
+const PALETTE_NAME_EN = {
+  XM: "Dark blue gray",
+  XN: "Light gray",
+  DC: "Orange red",
+  DD: "Dark red",
+  NV: "Red brown",
+  XL: "Dark green",
+  XD: "Dark blue",
+  XB: "Silver gray",
+  NB: "Metallic silver",
+};
+
+const PRODUCT_EN = {
+  ket_cau_thep: [
+    {
+      name: "Epoxy Paint",
+      desc: "Anti-corrosion and chemical-resistant protection for industrial steel structures",
+    },
+    {
+      name: "Polyurethane Paint",
+      desc: "Durable UV- and weather-resistant topcoat with excellent color retention",
+    },
+    {
+      name: "Alkyd Paint",
+      desc: "Economical coating for periodic maintenance of indoor steel structures",
+    },
+    {
+      name: "1K PU Paint",
+      desc: "Convenient one-component coating with lasting protection for industrial equipment",
+    },
+  ],
+  bon_chua: [
+    {
+      name: "Specialized Epoxy Paint",
+      desc: "Resists acids, alkalis and salt solutions for effective chemical tank protection",
+    },
+    {
+      name: "Phenolic Paint",
+      desc: "Strong chemical resistance for concentrated acid tanks and harsh environments",
+    },
+    {
+      name: "Chlorinated Rubber Paint",
+      desc: "Chemical-resistant and anti-static coating for fuel storage and chemical workshops",
+    },
+    {
+      name: "Silicate Paint",
+      desc: "High heat and chemical resistance for heavy industrial environments",
+    },
+    {
+      name: "Polyurethane Paint",
+      desc: "Exterior topcoat protecting equipment surfaces from UV and weathering",
+    },
+  ],
+  duong_ong: [
+    {
+      name: "Epoxy Paint",
+      desc: "Durable protection for industrial tanks and pipeline systems",
+    },
+    {
+      name: "Coal Tar Epoxy Paint",
+      desc: "Protects buried pipelines against soil corrosion and groundwater penetration",
+    },
+    {
+      name: "Polyurethane Paint",
+      desc: "Durable outdoor topcoat with UV and impact resistance for exposed pipelines",
+    },
+    {
+      name: "Bitumen Paint",
+      desc: "Waterproofing and protective coating for underground pipelines and tanks",
+    },
+    {
+      name: "1K PU Paint",
+      desc: "One-component exterior coating with good impact and UV resistance",
+    },
+  ],
+  san_be_tong: [
+    {
+      name: "Concrete Paint",
+      desc: "Strengthens concrete surfaces and helps resist dust, water and oil penetration",
+    },
+    {
+      name: "Polyurethane Paint",
+      desc: "Elastic coating with impact and temperature-shift resistance for warehouses",
+    },
+    {
+      name: "Self-leveling Concrete Paint",
+      desc: "Smooth glossy finish for heavy forklift traffic in factories and industrial warehouses",
+    },
+  ],
+  dac_biet: [
+    {
+      name: "Heat-resistant Paint 300°C",
+      desc: "Stable color and adhesion for continuous operation up to 300°C",
+    },
+    {
+      name: "Heat-resistant Paint 600°C",
+      desc: "Resists discoloration and peeling at extreme temperatures for stacks and furnaces",
+    },
+    {
+      name: "Silicate Paint",
+      desc: "ISO 12944 C5-M protection for marine and heavy industrial environments",
+    },
+  ],
+};
+
+function paletteName(c) {
+  return lang === "en" ? PALETTE_NAME_EN[c.code] || c.name : c.name;
+}
+
+function productCopy(tab, product, index) {
+  if (lang !== "en") return product;
+  const translated = PRODUCT_EN[tab.key]?.[index];
+  return {
+    ...product,
+    name: translated?.name || product.name,
+    desc: translated?.desc || product.desc,
+  };
+}
 
 // ══ 0.5 GỢI Ý XOAY NGANG MÀN HÌNH (chỉ áp dụng cho điện thoại) ══
 const rotateOverlay = document.getElementById("rotate-device-overlay");
@@ -549,15 +684,16 @@ const CAM_PRESETS = {
   bon_chua: { pos: [14, 10, 10], target: [0, 4.5, 0] },
   duong_ong: { pos: [10, 6, 12], target: [0, 2.2, 0] },
   san_be_tong: { pos: [10, 10, 8], target: [0, 0.5, 0] },
-  dac_biet: { pos: [14, 9, 14], target: [0, 3.5, 0] },
+  dac_biet: { pos: [12, 6, 12], target: [0, 1.2, 0] },
 };
 
 // FIX 3: Màu mặc định cho tab Lĩnh vực đặc biệt khi nền sáng
 // Dùng màu thép xanh đậm vừa, nổi rõ trên nền #dde3ea
-const DAC_BIET_DEFAULT_COLOR = "#6e8a9a";
+// const DAC_BIET_DEFAULT_COLOR = "#6e8a9a";
 
 const tabGroups = {};
 const tabLoadPromises = {};
+const tabFocusBoxes = {};
 let activeTabKey = null;
 let tabSwitchId = 0;
 
@@ -638,6 +774,56 @@ function applyDefaultColorToGroup(grp, hexColor) {
         }
       });
     }
+  });
+}
+
+function cloneMaterialForClarity(material, tab) {
+  const mat = material.clone();
+  const tint = new THREE.Color(tab.clarityTint || "#aeb8c1");
+  const strength = tab.clarityTintStrength ?? 0.7;
+
+  if (mat.color) {
+    mat.color.lerp(tint, strength);
+  }
+
+  mat.transparent = false;
+  mat.opacity = 1;
+  mat.depthWrite = true;
+  mat.depthTest = true;
+  mat.roughness = Math.min(mat.roughness ?? 0.6, 0.48);
+  mat.metalness = Math.max(mat.metalness ?? 0, 0.04);
+  mat.envMapIntensity = 0.25;
+  mat.needsUpdate = true;
+  return mat;
+}
+
+function applyModelClarity(model, tab) {
+  if (!tab.clarityMode) return;
+
+  const edgeMaterial = new THREE.LineBasicMaterial({
+    color: new THREE.Color(tab.edgeColor || "#4d6272"),
+    transparent: true,
+    opacity: tab.edgeOpacity ?? 0.32,
+    depthTest: true,
+    depthWrite: false,
+  });
+  const edgeThreshold = tab.edgeThresholdAngle ?? 30;
+
+  model.traverse((obj) => {
+    if (!obj.isMesh || !obj.geometry) return;
+
+    obj.material = Array.isArray(obj.material)
+      ? obj.material.map((mat) => cloneMaterialForClarity(mat, tab))
+      : cloneMaterialForClarity(obj.material, tab);
+
+    if (tab.edgeOverlay === false) return;
+    const edges = new THREE.LineSegments(
+      new THREE.EdgesGeometry(obj.geometry, edgeThreshold),
+      edgeMaterial.clone(),
+    );
+    edges.name = `${obj.name || "mesh"}__clarity_edges`;
+    edges.renderOrder = 2;
+    obj.add(edges);
   });
 }
 
@@ -752,12 +938,15 @@ function renderPalette() {
       (selectedColor?.code === c.code ? " selected" : "") +
       (c.metallic ? " metallic" : "");
     if (!c.metallic) sw.style.background = c.hex;
-    sw.title = `${c.code} — ${c.name}`;
+    sw.dataset.code = c.code;
+    sw.title = `${c.code} — ${paletteName(c)}`;
     sw.addEventListener("click", () => selectColor(c));
     grid.appendChild(sw);
   });
   document.getElementById("product-block-title").textContent = t().productTitle;
   document.getElementById("btn-apply-all").textContent = t().applyAll;
+  syncStaticText();
+  syncActiveColorDisplay();
 }
 
 function selectColor(c) {
@@ -774,17 +963,52 @@ function selectColor(c) {
     swatch.className = "";
     swatch.style.background = c.hex;
   }
-  document.getElementById("active-code").textContent = `${c.name}`;
-  document.getElementById("active-hex").textContent = c.hex.toUpperCase();
+  syncActiveColorDisplay();
   document.querySelectorAll(".color-swatch").forEach((el) => {
-    el.classList.toggle("selected", el.title.startsWith(c.code + " "));
+    el.classList.toggle("selected", el.dataset.code === c.code);
   });
   if (!paintMode) enablePaintMode();
+}
+
+function syncActiveColorDisplay() {
+  const activeCode = document.getElementById("active-code");
+  const activeHex = document.getElementById("active-hex");
+  if (activeCode) {
+    activeCode.textContent = selectedColor
+      ? paletteName(selectedColor)
+      : t().noColor;
+  }
+  if (activeHex) {
+    activeHex.textContent = selectedColor
+      ? selectedColor.hex.toUpperCase()
+      : "";
+  }
+}
+
+function syncPaintHintBadge() {
+  const hint = document.getElementById("paint-hint");
+  if (!hint) return;
+  hint.innerHTML = `<span class="paint-dot"></span> ${t().hintPaint}`;
+}
+
+function syncStaticText() {
+  document.querySelector(".header-title-text").textContent = t().headerTitle;
+  document.querySelector(".hdr-cta").textContent = t().consult;
+  document.querySelector("#color-block .block-title").textContent =
+    t().colorTitle;
+  document.querySelector(".cta-label").textContent = t().ctaLabel;
+  document.querySelector(".cta-sub").textContent = t().ctaSub;
+  document.querySelector(".cta-btn").textContent = t().ctaBtn;
+  document.getElementById("hint-text").textContent = paintMode
+    ? t().hintPaint
+    : t().hintReady;
+  syncPaintHintBadge();
 }
 
 function enablePaintMode() {
   paintMode = true;
   document.getElementById("btn-paint").dataset.active = "true";
+  syncPaintHintBadge();
   document.getElementById("paint-hint").classList.remove("hidden");
   document.getElementById("hint-text").textContent = t().hintPaint;
   controls.enableRotate = false;
@@ -808,9 +1032,8 @@ document.getElementById("btn-reset-color").addEventListener("click", () => {
   const swatch = document.getElementById("active-swatch");
   swatch.className = "";
   swatch.style.background = "#cccccc";
-  document.getElementById("active-code").textContent = t().noColor;
-  document.getElementById("active-hex").textContent = "";
   selectedColor = null;
+  syncActiveColorDisplay();
   document
     .querySelectorAll(".color-swatch")
     .forEach((el) => el.classList.remove("selected"));
@@ -826,15 +1049,16 @@ function renderProducts(tab) {
   const el = document.getElementById("product-list");
   el.innerHTML = "";
   (tab.products || []).forEach((p, i) => {
+    const copy = productCopy(tab, p, i);
     const item = document.createElement("div");
     item.className = "product-item";
     item.innerHTML = `
       <div class="prod-num">${i + 1}</div>
       <div class="prod-info">
-        <div class="prod-name">${p.name}</div>
-        <div class="prod-desc">${p.desc}</div>
+        <div class="prod-name">${copy.name}</div>
+        <div class="prod-desc">${copy.desc}</div>
       </div>
-      <a href="${p.link}" target="_blank" class="prod-link">Xem →</a>`;
+      <a href="${p.link}" target="_blank" class="prod-link">${t().viewProduct}</a>`;
     el.appendChild(item);
   });
 }
@@ -857,8 +1081,9 @@ function onTabClick(key) {
 
 // FIX 3: Xóa logic nền tối — tất cả tab dùng nền sáng thống nhất
 function setSceneBackground(key) {
+  const tab = TABS.find((t) => t.key === key) || {};
   scene.background = BG_DEFAULT.clone();
-  scene.fog = new THREE.Fog(0xdde3ea, 55, 160);
+  scene.fog = new THREE.Fog(0xdde3ea, tab.fogNear || 55, tab.fogFar || 160);
   ground.material.color.setHex(0xcdd5de);
 }
 
@@ -894,7 +1119,7 @@ function ensureTabGroup(key, tab) {
   if (tabGroups[key]) return Promise.resolve(tabGroups[key]);
   if (tabLoadPromises[key]) return tabLoadPromises[key];
 
-  tabLoadPromises[key] = tryLoadGLB(key, tab.modelFile)
+  tabLoadPromises[key] = tryLoadGLB(key, tab)
     .then((model) => model || buildAndAdd(key))
     .finally(() => {
       delete tabLoadPromises[key];
@@ -905,32 +1130,123 @@ function ensureTabGroup(key, tab) {
 
 // FIX 3: Áp màu mặc định cho dac_biet TRƯỚC saveOriginals
 // → màu mặc định trở thành baseline khi người dùng nhấn reset
+// function buildAndAdd(key) {
+//   const grp = BUILDERS[key]();
+//   if (key === "dac_biet") {
+//     applyDefaultColorToGroup(grp, DAC_BIET_DEFAULT_COLOR);
+//   }
+//   grp.visible = false;
+//   scene.add(grp);
+//   saveOriginals(grp);
+//   tabGroups[key] = grp;
+//   return grp;
+// }
+
 function buildAndAdd(key) {
   const grp = BUILDERS[key]();
-  if (key === "dac_biet") {
-    applyDefaultColorToGroup(grp, DAC_BIET_DEFAULT_COLOR);
-  }
   grp.visible = false;
   scene.add(grp);
   saveOriginals(grp);
   tabGroups[key] = grp;
+  tabFocusBoxes[key] = new THREE.Box3().setFromObject(grp);
   return grp;
 }
 
 function afterSwitch(key, loadingId) {
   if (!tabGroups[key] || activeTabKey !== key) return;
+  const tab = TABS.find((t) => t.key === key);
   Object.entries(tabGroups).forEach(([tabKey, group]) => {
     group.visible = tabKey === key;
   });
+  controls.enablePan = tab?.lockPan !== true;
+  controls.minDistance = tab?.minDistance || 2;
   tabGroups[key].visible = true;
   flyToPreset(key);
   hideLoading(loadingId);
 }
 
-function tryLoadGLB(key, filename) {
+function normalizeObjectName(name) {
+  return String(name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function meshNameMatches(name, exactNames, partialNames) {
+  const normalized = normalizeObjectName(name);
+  if (exactNames.has(name)) return true;
+  for (const exact of exactNames) {
+    if (normalized === normalizeObjectName(exact)) return true;
+  }
+  return partialNames.some((part) =>
+    normalized.includes(normalizeObjectName(part)),
+  );
+}
+
+function getModelBox(
+  model,
+  {
+    ignoreMeshNames = [],
+    includeMeshNames = [],
+    includeNameIncludes = [],
+  } = {},
+) {
+  const ignoredNames = new Set(ignoreMeshNames);
+  const includedNames = new Set(includeMeshNames);
+  const hasIncludeFilter =
+    includedNames.size > 0 || includeNameIncludes.length > 0;
+  const fitBox = new THREE.Box3();
+  const meshBox = new THREE.Box3();
+  let hasMesh = false;
+
+  model.updateWorldMatrix(true, true);
+  model.traverse((obj) => {
+    if (!obj.isMesh) return;
+    const searchableName = [obj.name, obj.geometry?.name, obj.userData?.name]
+      .filter(Boolean)
+      .join(" ");
+    if (meshNameMatches(searchableName, ignoredNames, [])) return;
+    if (
+      hasIncludeFilter &&
+      !meshNameMatches(searchableName, includedNames, includeNameIncludes)
+    ) {
+      return;
+    }
+
+    meshBox.setFromObject(obj);
+    if (!meshBox.isEmpty()) {
+      fitBox.union(meshBox);
+      hasMesh = true;
+    }
+  });
+
+  return hasMesh ? fitBox : null;
+}
+
+function getModelFitBox(model, tab) {
+  return (
+    getModelBox(model, {
+      ignoreMeshNames: tab.fitIgnoreMeshNames || [],
+      includeMeshNames: tab.fitMeshNames || [],
+      includeNameIncludes: tab.fitNameIncludes || [],
+    }) || new THREE.Box3().setFromObject(model)
+  );
+}
+
+function getModelFocusBox(model, tab) {
+  return (
+    getModelBox(model, {
+      ignoreMeshNames: tab.fitIgnoreMeshNames || [],
+      includeMeshNames: tab.focusMeshNames || [],
+      includeNameIncludes: tab.focusNameIncludes || [],
+    }) || getModelFitBox(model, tab)
+  );
+}
+
+function tryLoadGLB(key, tab) {
   return new Promise((resolve) => {
     new GLTFLoader().load(
-      `./assets/models/${filename}`,
+      `./assets/models/${tab.modelFile}`,
       (gltf) => {
         if (tabGroups[key]) {
           resolve(tabGroups[key]);
@@ -938,9 +1254,10 @@ function tryLoadGLB(key, filename) {
         }
 
         const model = gltf.scene;
-        const bbox = new THREE.Box3().setFromObject(model);
+        const bbox = getModelFitBox(model, tab);
         const size = bbox.getSize(new THREE.Vector3());
-        const s = 10 / Math.max(size.x, size.y, size.z);
+        const fitSize = tab.fitSize || 10;
+        const s = fitSize / Math.max(size.x, size.y, size.z);
         model.scale.setScalar(s);
         const cen = bbox.getCenter(new THREE.Vector3());
         model.position.set(-cen.x * s, -bbox.min.y * s, -cen.z * s);
@@ -951,12 +1268,14 @@ function tryLoadGLB(key, filename) {
           }
         });
         // FIX 3: Áp màu mặc định trước saveOriginals cho GLB dac_biet
-        if (key === "dac_biet") {
-          applyDefaultColorToGroup(model, DAC_BIET_DEFAULT_COLOR);
-        }
+        // if (key === "dac_biet") {
+        //   applyDefaultColorToGroup(model, DAC_BIET_DEFAULT_COLOR);
+        // }
+        applyModelClarity(model, tab);
         scene.add(model);
         saveOriginals(model);
         tabGroups[key] = model;
+        tabFocusBoxes[key] = getModelFocusBox(model, tab);
         resolve(model);
       },
       (xhr) => {
@@ -981,16 +1300,54 @@ function ease(t) {
   return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
-function flyToPreset(key) {
-  const p = CAM_PRESETS[key];
-  if (!p) return;
+function startFlyTo(pos, look) {
   _sp.copy(camera.position);
   _sl.copy(controls.target);
-  flyTarget = {
-    pos: new THREE.Vector3(...p.pos),
-    look: new THREE.Vector3(...p.target),
-  };
+  flyTarget = { pos, look };
   flyT = 0;
+}
+
+function getStoredFocusBox(key) {
+  const box = tabFocusBoxes[key];
+  if (box && !box.isEmpty()) return box;
+  return null;
+}
+
+function makeBoxCameraTarget(key, box, distanceMultiplier) {
+  const tab = TABS.find((t) => t.key === key) || {};
+  const size = box.getSize(new THREE.Vector3());
+  const look = box.getCenter(new THREE.Vector3());
+  const targetYRatio = Number.isFinite(tab.focusTargetYRatio)
+    ? tab.focusTargetYRatio
+    : 0.5;
+  look.y = box.min.y + size.y * targetYRatio;
+
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const d = maxDim * (distanceMultiplier || tab.focusDistanceMultiplier || 1.7);
+  const offset = tab.focusCameraOffset || [0.6, 0.45, 0.7];
+
+  return {
+    pos: new THREE.Vector3(
+      look.x + d * offset[0],
+      look.y + d * offset[1],
+      look.z + d * offset[2],
+    ),
+    look,
+  };
+}
+
+function flyToPreset(key) {
+  const tab = TABS.find((t) => t.key === key);
+  const focusBox = getStoredFocusBox(key);
+  if (tab?.focusCamera && focusBox) {
+    const target = makeBoxCameraTarget(key, focusBox);
+    startFlyTo(target.pos, target.look);
+    return;
+  }
+
+  const p = CAM_PRESETS[key];
+  if (!p) return;
+  startFlyTo(new THREE.Vector3(...p.pos), new THREE.Vector3(...p.target));
 }
 
 // ══ 12. TOOLBAR BUTTONS ═══════════════════════════════════
@@ -1000,17 +1357,10 @@ document.getElementById("btn-reset").addEventListener("click", () => {
 document.getElementById("btn-fit").addEventListener("click", () => {
   const grp = tabGroups[activeTabKey];
   if (!grp) return;
-  const bbox = new THREE.Box3().setFromObject(grp);
-  const cen = bbox.getCenter(new THREE.Vector3());
-  const size = bbox.getSize(new THREE.Vector3());
-  const d = Math.max(size.x, size.y, size.z) * 1.7;
-  _sp.copy(camera.position);
-  _sl.copy(controls.target);
-  flyTarget = {
-    pos: new THREE.Vector3(cen.x + d * 0.6, cen.y + d * 0.45, cen.z + d * 0.7),
-    look: cen.clone(),
-  };
-  flyT = 0;
+  const bbox =
+    getStoredFocusBox(activeTabKey) || new THREE.Box3().setFromObject(grp);
+  const target = makeBoxCameraTarget(activeTabKey, bbox, 1.45);
+  startFlyTo(target.pos, target.look);
 });
 let autoRotate = false;
 document.getElementById("btn-rotate").addEventListener("click", () => {
