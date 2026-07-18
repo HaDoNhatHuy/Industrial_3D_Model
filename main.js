@@ -1280,9 +1280,7 @@ function tryLoadGLB(key, tab) {
       },
       (xhr) => {
         if (activeTabKey !== key) return;
-        setLoadingPct(
-          xhr.total ? Math.round((xhr.loaded / xhr.total) * 100) : 0,
-        );
+        setLoadingPct(xhr.total ? (xhr.loaded / xhr.total) * 100 : 0, 99);
       },
       () => resolve(null),
     );
@@ -1392,9 +1390,13 @@ function showLoading(msg) {
   overlay.classList.remove("hidden");
   return id;
 }
-function setLoadingPct(p) {
-  document.getElementById("loading-bar").style.width = p + "%";
-  document.getElementById("loading-pct").textContent = p + "%";
+function setLoadingPct(p, max = 100) {
+  const safeMax = Math.max(0, Math.min(100, max));
+  const safePct = Number.isFinite(p)
+    ? Math.max(0, Math.min(safeMax, Math.round(p)))
+    : 0;
+  document.getElementById("loading-bar").style.width = safePct + "%";
+  document.getElementById("loading-pct").textContent = safePct + "%";
 }
 function hideLoading(id = loadingUiId) {
   if (id !== loadingUiId) return;
