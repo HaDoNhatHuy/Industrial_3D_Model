@@ -40,8 +40,15 @@
         <span class="header-title-text">Bản đồ Sơn Công Nghiệp 3D</span>
       </div>
       <div class="header-actions">
-        <button id="btn-lang" class="hdr-btn">
-          <span>🌐</span><span id="lang-label">EN</span>
+        <button
+          id="btn-lang"
+          class="hdr-btn lang-switch"
+          type="button"
+          aria-label="Switch language"
+        >
+          <span id="lang-current" class="lang-code lang-code-current">VI</span>
+          <span class="lang-arrow" aria-hidden="true">&rarr;</span>
+          <span id="lang-label" class="lang-code lang-code-next">EN</span>
         </button>
         <a href="https://sonhaivan.com/lien-he/" target="_blank" class="hdr-cta"
           >Tư vấn ngay</a

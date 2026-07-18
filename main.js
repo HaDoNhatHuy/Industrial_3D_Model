@@ -1369,9 +1369,25 @@ document.getElementById("btn-rotate").addEventListener("click", () => {
 });
 
 // ══ 13. LANGUAGE TOGGLE ═══════════════════════════════════
+function updateLangButton() {
+  const current = document.getElementById("lang-current");
+  const next = document.getElementById("lang-label");
+  const btn = document.getElementById("btn-lang");
+  const currentLang = lang === "vi" ? "VI" : "EN";
+  const nextLang = lang === "vi" ? "EN" : "VI";
+
+  if (current) current.textContent = currentLang;
+  if (next) next.textContent = nextLang;
+  if (btn) {
+    btn.title =
+      lang === "vi" ? "Switch to English" : "Chuyển sang tiếng Việt";
+    btn.setAttribute("aria-label", btn.title);
+  }
+}
+
 document.getElementById("btn-lang").addEventListener("click", () => {
   lang = lang === "vi" ? "en" : "vi";
-  document.getElementById("lang-label").textContent = t().toggleBtn;
+  updateLangButton();
   floatBtn.textContent = t().navShow;
   renderTabs();
   renderPalette();
@@ -1426,6 +1442,7 @@ const clock = new THREE.Clock();
 
 // ══ 16. INIT ══════════════════════════════════════════════
 function init() {
+  updateLangButton();
   renderTabs();
   renderPalette();
   showLoading("Đang khởi tạo...");
